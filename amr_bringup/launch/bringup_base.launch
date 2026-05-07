@@ -1,0 +1,111 @@
+<launch>
+  <!--
+    Base bringup:
+      - Robot description + TF
+      - Teensy bridge (cmd_vel <-> serial, odom, imu, TF)
+      - LiDAR and IMU drivers (via amr_sensors)
+  -->
+
+  <arg name="port" default="/dev/ttyACM0"/>
+  <arg name="baud" default="115200"/>
+  <arg name="lidar_type" default="rplidar"/>
+  <arg name="lidar_port" default="/dev/ttyUSB0"/>
+  <arg name="lidar_baud" default="115200"/>
+
+  <!-- Robot model and TF -->
+  <include file="$(find amr_description)/launch/display.launch">
+    <arg name="use_gui" value="false"/>
+    <arg name="rviz" value="false"/>
+  </include>
+
+  <!-- Teensy bridge -->
+  <node pkg="amr_teensy_bridge"
+        type="teensy_bridge_node.py"
+        name="teensy_bridge"
+        output="screen">
+    <param name="port" value="$(arg port)"/>
+    <param name="baud" value="$(arg baud)"/>
+    <!-- Publish raw wheel odom on a separate topic; keep frame_id=odom so EKF does not
+         require an extra wheel_odom->odom TF transform. -->
+    <param name="odom_frame" value="odom"/>
+    <param name="base_frame" value="base_footprint"/>
+    <param name="odom_topic" value="wheel_odom"/>
+    <param name="publish_tf" value="false"/>
+    <param name="wheel_radius" value="0.05"/>
+    <param name="half_length" value="0.15"/>
+    <param name="half_width" value="0.1975"/>
+    <!-- Odom axis sign calibration: only X is flipped for the current setup. -->
+    <param name="odom_vx_sign" value="-1.0"/>
+    <param name="odom_vy_sign" value="1.0"/>
+    <param name="odom_wz_sign" value="1.0"/>
+    <param name="odom_vx_gain" value="1.0"/>
+    <param name="odom_vy_gain" value="1.0"/>
+    <!-- Yaw was observed ~2x too large (90 deg physical -> ~180 deg in RViz). -->
+    <param name="odom_wz_gain" value="0.5"/>
+    <!-- Translation frame correction (set to 0 when physical pushes already map correctly). -->
+    <param name="odom_xy_rotation_deg" value="0.0"/>
+    <!-- Odom spike guard tuning:
+         raise allowed encoder delta so fast manual pushes are not discarded. -->
+    <param name="max_encoder_delta_per_cycle" value="0"/>
+    <param name="max_encoder_delta_auto" value="true"/>
+    <param name="max_reasonable_wheel_lin_mps" value="1.0"/>
+    <param name="max_encoder_delta_margin" value="3.0"/>
+    <!-- Odom calibration:
+         - Keep this POSITIVE for bridge spike-guard math.
+         - 1530 (instead of 6120) compensates 4x under-rotation seen in yaw tests
+           with current encoder decoding path. -->
+    <param name="encoder_ticks_per_rev" value="1530.0"/>
+  </node>
+
+  <!-- EKF fusion: wheel odom + MPU6050 orientation -> fused /odom + odom->base_footprint TF -->
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_localization"
+        output="screen"
+        clear_params="true">
+    <param name="frequency" value="50.0"/>
+    <param name="sensor_timeout" value="0.2"/>
+    <param name="two_d_mode" value="true"/>
+    <param name="publish_tf" value="true"/>
+
+    <param name="map_frame" value="map"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="base_link_frame" value="base_footprint"/>
+    <param name="world_frame" value="odom"/>
+
+    <param name="odom0" value="wheel_odom"/>
+    <!-- Use wheel odom for planar translation only.
+         Leave yaw to IMU fusion to avoid rotation/lateral coupling artifacts. -->
+    <rosparam param="odom0_config">[true, true, false,
+                                    false, false, false,
+                                    true, true, false,
+                                    false, false, false,
+                                    false, false, false]</rosparam>
+    <param name="odom0_differential" value="false"/>
+    <param name="odom0_relative" value="false"/>
+    <param name="odom0_queue_size" value="10"/>
+
+    <param name="imu0" value="imu/data"/>
+    <rosparam param="imu0_config">[false, false, false,
+                                   false, false, true,
+                                   false, false, false,
+                                   false, false, false,
+                                   false, false, false]</rosparam>
+    <param name="imu0_differential" value="false"/>
+    <param name="imu0_relative" value="false"/>
+    <param name="imu0_queue_size" value="10"/>
+    <param name="imu0_remove_gravitational_acceleration" value="false"/>
+
+    <!-- Keep existing consumers unchanged by publishing EKF output on /odom -->
+    <remap from="odometry/filtered" to="odom"/>
+  </node>
+
+  <!-- Sensors (LiDAR + optional IMU if on PC) -->
+  <include file="$(find amr_sensors)/launch/sensors_lidar_imu.launch">
+    <arg name="lidar_type" value="$(arg lidar_type)"/>
+    <arg name="lidar_port" value="$(arg lidar_port)"/>
+    <arg name="lidar_baud" value="$(arg lidar_baud)"/>
+  </include>
+
+</launch>
+

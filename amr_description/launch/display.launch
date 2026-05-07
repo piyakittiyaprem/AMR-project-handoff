@@ -1,0 +1,30 @@
+<launch>
+  <!-- Publish the robot state from URDF/xacro and visualize in RViz -->
+
+  <arg name="use_gui" default="false"/>
+  <arg name="rviz" default="true"/>
+
+  <!-- Robot description from xacro -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find amr_description)/urdf/robot.urdf.xacro"/>
+
+  <!-- Joint state publisher (all joints fixed except wheels) -->
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher"
+        if="$(arg use_gui)" />
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher_no_gui"
+        unless="$(arg use_gui)">
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <!-- Robot state publisher -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" value="50.0"/>
+  </node>
+
+  <!-- Optional RViz view -->
+  <group if="$(arg rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find amr_description)/rviz/model_view.rviz" />
+  </group>
+</launch>
+

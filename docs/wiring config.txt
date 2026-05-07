@@ -1,0 +1,29 @@
+motor drivers are BLD70B which has 4 pins: red,black,SV,F/R
+each wheel has its own motor driver, encoder and relay
+1.right bottom wheel
+SV-pin5 teensy
+FR-NC(normally close) relay and IN pin of relay is connected to pin4 teensy
+encoder green wire-pin21 teensy
+encoder white wire-pin20 teensy
+2.left bottom wheel
+SV-pin9 teensy
+FR-NC(normally open) relay and IN pin of relay is connected to pin8 teensy
+encoder green wire-pin14 teensy
+encoder white wire-pin15 teensy
+3.right upper wheel
+SV-pin2 teensy
+FR-NC(normally close) relay and IN pin of relay is connected to pin3 teensy
+encoder green wire-pin23 teensy
+encoder white wire-pin22 teensy
+4.left upper wheel
+SV-pin6 teensy
+FR-NC(normally open) relay and IN pin of relay is connected to pin7 teensy
+encoder green wire-pin17 teensy
+encoder white wire-pin16 teensy
+
+MPU6050
+SDA - pin 19 teensy
+SCL - pin 18 teensy
+
+Robot dimensions
+*ALL NUMBERS ARE IN CM*.wheel width 5,wheel radius 5, log sep 30,lat sep 39.5, IMU IS in front of the middle by 3.5 cm,left from the middle by 4 cm,and up from bottom chassis 3 cm, beam height is 39.5 cm(from top chassis to the very top) 

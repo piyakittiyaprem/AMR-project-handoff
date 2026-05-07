@@ -1,0 +1,72 @@
+<launch>
+  <!--
+    Run LiDAR-based SLAM (gmapping) with the real robot:
+      - Assumes amr_bringup/bringup_base.launch is already running
+        OR is included here to start Teensy, description, and sensors.
+  -->
+
+  <arg name="include_bringup" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="port" default="/dev/ttyACM0"/>
+  <arg name="baud" default="115200"/>
+  <arg name="lidar_port" default="/dev/ttyUSB0"/>
+  <arg name="lidar_baud" default="115200"/>
+
+  <group if="$(arg include_bringup)">
+    <include file="$(find amr_bringup)/launch/bringup_base.launch">
+      <arg name="port" value="$(arg port)"/>
+      <arg name="baud" value="$(arg baud)"/>
+      <arg name="lidar_port" value="$(arg lidar_port)"/>
+      <arg name="lidar_baud" value="$(arg lidar_baud)"/>
+    </include>
+  </group>
+
+  <!-- Gmapping SLAM -->
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="base_frame" value="base_footprint"/>
+    <param name="odom_frame" value="odom"/>
+    <!-- Map update timing and scan usage -->
+    <param name="map_update_interval" value="0.5"/>
+    <param name="maxUrange" value="8.0"/>
+    <param name="maxRange" value="12.0"/>
+    <param name="minimumScore" value="80"/>
+
+    <!-- Indoor low-speed mapping cadence -->
+    <param name="linearUpdate" value="0.10"/>
+    <param name="angularUpdate" value="0.10"/>
+    <param name="temporalUpdate" value="0.5"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="80"/>
+
+    <!-- Scan matcher tuning for loop closure stability -->
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.03"/>
+    <param name="astep" value="0.03"/>
+    <param name="iterations" value="8"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+
+    <!-- Map resolution and bounds -->
+    <param name="delta" value="0.03"/>
+    <param name="xmin" value="-25.0"/>
+    <param name="ymin" value="-25.0"/>
+    <param name="xmax" value="25.0"/>
+    <param name="ymax" value="25.0"/>
+
+    <!-- Motion model noise (conservative start for wheel-slip base) -->
+    <param name="srr" value="0.10"/>
+    <param name="srt" value="0.20"/>
+    <param name="str" value="0.10"/>
+    <param name="stt" value="0.20"/>
+  </node>
+
+  <!-- RViz for mapping -->
+  <group if="$(arg rviz)">
+    <node pkg="rviz" type="rviz" name="rviz"
+          args="-d $(find amr_navigation)/rviz/slam.rviz" />
+  </group>
+
+</launch>
+

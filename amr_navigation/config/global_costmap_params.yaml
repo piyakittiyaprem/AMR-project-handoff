@@ -1,0 +1,16 @@
+## Global costmap tracks static map + long-range obstacles for global planning.
+global_costmap:
+  global_frame: map
+  robot_base_frame: base_footprint
+  update_frequency: 5.0
+  publish_frequency: 5.0
+  transform_tolerance: 0.5
+  rolling_window: false
+  width: 20.0
+  height: 20.0
+  resolution: 0.05
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+

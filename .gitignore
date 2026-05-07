@@ -1,0 +1,25 @@
+# ROS catkin build artifacts
+build/
+devel/
+install/
+logs/
+
+# ROS runtime logs and generated files
+*.log
+*.bag
+*.active
+*.orig
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE/system noise
+.DS_Store
+Thumbs.db
+
+# Cursor local configuration
+.cursor/
+
+# Local report template folder (excluded from repository)
+2020_SeniorProjectReportTemplate/

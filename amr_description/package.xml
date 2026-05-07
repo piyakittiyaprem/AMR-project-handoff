@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>amr_description</name>
+  <version>0.0.1</version>
+  <description>
+    URDF/xacro model and robot-state-publisher configuration for the mecanum AMR.
+  </description>
+
+  <maintainer email="you@example.com">amr_user</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>urdf</build_depend>
+  <build_depend>xacro</build_depend>
+  <build_depend>robot_state_publisher</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+
+  <export>
+  </export>
+</package>
+

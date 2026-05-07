@@ -1,0 +1,19 @@
+# Wider than default: clinic / medium sim rooms; default 2.5 m misses walls >2.5 m away.
+# Inflation must stay *small* in ~0.8 m doorways: 0.4 m inflation + 0.4 m from
+# opposite wall blocks the path (robot is ~0.42 m). Use 0.18 m here.
+obstacle_range: 8.0
+raytrace_range: 9.5
+
+footprint: [[0.21, 0.16], [0.21, -0.16], [-0.21, -0.16], [-0.21, 0.16]]
+inflation_radius: 0.18
+cost_scaling_factor: 2.2
+
+observation_sources: laser_scan_sensor
+
+laser_scan_sensor:
+  data_type: LaserScan
+  topic: scan
+  sensor_frame: laser
+  marking: true
+  clearing: true
+  expected_update_rate: 0.0

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>amr_manual_teleop</name>
+  <version>0.0.1</version>
+  <description>
+    ROS1 Noetic manual WASD/QE teleop for Jetson->Teensy mecanum AMR.
+  </description>
+
+  <maintainer email="you@example.com">amr_user</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+</package>

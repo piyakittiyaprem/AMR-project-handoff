@@ -1,0 +1,42 @@
+<launch>
+  <!--
+    Generic LiDAR + IMU bringup.
+
+    Adjust the LiDAR driver node to match the actual hardware on the Jetson:
+      - For RPLIDAR: use rplidar_ros/rplidarNode with appropriate serial_port
+      - For YDLIDAR: use ydlidar_ros_driver node, etc.
+
+    This file assumes:
+      - LiDAR publishes sensor_msgs/LaserScan on /scan
+      - IMU publishes sensor_msgs/Imu on /imu/data (if not sourced from Teensy)
+  -->
+
+  <arg name="lidar_type" default="rplidar"/>
+  <arg name="lidar_port" default="/dev/ttyUSB0"/>
+  <arg name="lidar_baud" default="115200"/>
+
+  <!-- Example: RPLIDAR A2/A3 style driver (adjust if different) -->
+  <group if="$(eval lidar_type == 'rplidar')">
+    <node pkg="rplidar_ros" type="rplidarNode" name="rplidar">
+      <param name="serial_port" value="$(arg lidar_port)"/>
+      <param name="serial_baudrate" value="$(arg lidar_baud)"/>
+      <param name="frame_id" value="lidar_link"/>
+      <param name="inverted" value="false"/>
+      <param name="angle_compensate" value="true"/>
+    </node>
+  </group>
+
+  <!-- Placeholder for other LiDAR drivers -->
+  <!--
+  <group if="$(eval lidar_type == 'ydlidar')">
+    <node pkg="ydlidar_ros_driver" type="ydlidar_ros_driver_node" name="ydlidar">
+      ...
+    </node>
+  </group>
+  -->
+
+  <!-- IMU driver (optional): if IMU is connected directly to the Jetson.
+       If IMU data comes only from Teensy, this can be omitted. -->
+
+</launch>
+

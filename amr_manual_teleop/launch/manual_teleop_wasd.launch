@@ -1,0 +1,22 @@
+<launch>
+  <node pkg="amr_manual_teleop"
+        type="manual_teleop_wasd.py"
+        name="manual_teleop_wasd"
+        output="screen">
+    <!-- Teleop rate and deadman per-axis timeout -->
+    <param name="teleop_rate_hz" value="20.0"/>
+    <param name="teleop_timeout_ms" value="300"/>
+
+    <!-- Fixed low speeds (damage-safe) -->
+    <param name="v_lin_fixed" value="0.05"/>
+    <param name="v_yaw_fixed" value="0.15"/>
+
+    <!-- Safety clamping bounds -->
+    <param name="max_linear_v" value="0.06"/>
+    <param name="max_yaw_rate" value="0.20"/>
+
+    <!-- Rate-limited debug logging -->
+    <param name="log_every_s" value="0.5"/>
+  </node>
+</launch>
+

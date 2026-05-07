@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>amr_sensors</name>
+  <version>0.0.1</version>
+  <description>
+    Sensor bringup and configuration (LiDAR and IMU) for the mecanum AMR.
+    This package is intentionally generic: choose and install the correct
+    LiDAR driver on the Jetson, then adjust the included launch file.
+  </description>
+
+  <maintainer email="you@example.com">amr_user</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>roslaunch</exec_depend>
+
+  <export>
+  </export>
+</package>
+

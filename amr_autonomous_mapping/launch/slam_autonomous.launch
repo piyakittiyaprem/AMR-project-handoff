@@ -1,0 +1,83 @@
+<launch>
+  <!--
+    Keep the same Mode 2 entrypoint, but run LiDAR-only SLAM for manual sensor movement.
+    Odometry is generated from LiDAR SLAM pose + MPU6050 IMU (no wheel odometry required).
+  -->
+
+  <arg name="include_bringup" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="port" default="/dev/ttyACM0"/>
+  <arg name="baud" default="115200"/>
+  <arg name="lidar_type" default="rplidar"/>
+  <arg name="lidar_port" default="/dev/ttyUSB0"/>
+  <arg name="lidar_baud" default="115200"/>
+
+  <!-- Minimal bringup path for manual LiDAR mapping:
+       - robot TF model
+       - Teensy bridge only to stream MPU6050 IMU on /imu/data
+       - LiDAR driver on /scan -->
+  <group if="$(arg include_bringup)">
+    <include file="$(find amr_description)/launch/display.launch">
+      <arg name="use_gui" value="false"/>
+      <arg name="rviz" value="false"/>
+    </include>
+
+    <node pkg="amr_teensy_bridge"
+          type="teensy_bridge_node.py"
+          name="teensy_bridge"
+          output="screen">
+      <param name="port" value="$(arg port)"/>
+      <param name="baud" value="$(arg baud)"/>
+      <param name="publish_tf" value="false"/>
+      <param name="odom_frame" value="odom"/>
+      <param name="base_frame" value="base_footprint"/>
+      <param name="odom_topic" value="wheel_odom"/>
+    </node>
+
+    <include file="$(find amr_sensors)/launch/sensors_lidar_imu.launch">
+      <arg name="lidar_type" value="$(arg lidar_type)"/>
+      <arg name="lidar_port" value="$(arg lidar_port)"/>
+      <arg name="lidar_baud" value="$(arg lidar_baud)"/>
+    </include>
+  </group>
+
+  <!-- Publish /odom using LiDAR SLAM position + MPU6050 heading -->
+  <node pkg="amr_autonomous_mapping"
+        type="slam_pose_to_odom.py"
+        name="slam_pose_to_odom"
+        output="screen">
+    <param name="slam_pose_topic" value="/slam_out_pose"/>
+    <param name="imu_topic" value="/imu/data"/>
+    <param name="odom_topic" value="/odom"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="base_frame" value="base_footprint"/>
+    <param name="use_imu_orientation" value="true"/>
+    <param name="imu_timeout_s" value="0.25"/>
+    <param name="publish_tf" value="true"/>
+    <param name="stamp_now" value="true"/>
+    <param name="publish_rate_hz" value="30.0"/>
+  </node>
+
+  <!-- 2D LiDAR SLAM without wheel odometry -->
+  <node pkg="hector_mapping"
+        type="hector_mapping"
+        name="hector_mapping"
+        output="screen"
+        launch-prefix="bash -c 'sleep 5; $0 $@'">
+    <param name="base_frame" value="base_footprint"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="map_frame" value="map"/>
+    <param name="pub_map_odom_transform" value="true"/>
+    <param name="scan_subscriber_queue_size" value="5"/>
+    <param name="map_resolution" value="0.05"/>
+    <param name="map_update_distance_thresh" value="0.10"/>
+    <param name="map_update_angle_thresh" value="0.06"/>
+    <param name="update_factor_free" value="0.4"/>
+    <param name="update_factor_occupied" value="0.9"/>
+  </node>
+
+  <group if="$(arg rviz)">
+    <node pkg="rviz" type="rviz" name="rviz"
+          args="-d $(find amr_navigation)/rviz/slam.rviz"/>
+  </group>
+</launch>
