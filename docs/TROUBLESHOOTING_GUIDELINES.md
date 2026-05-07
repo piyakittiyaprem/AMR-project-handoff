@@ -231,19 +231,18 @@ hostname
 
 To keep Jetson Nano stable during ROS and AI workloads, use one of these power methods.
 
-1. 5V 4A DC Barrel Jack 
-Most reliable option for stationary development and 10W mode.
+1. **5V 4A DC Barrel Jack**
+(Most reliable option for stationary development and 10W mode)
 
 - Setup: put jumper cap on J48 to enable barrel-jack power input.
 - Best for: Bench testing, mapping, and heavy compute sessions.
 - Why: Reduces brownout risk during high CPU/GPU load.
-2. Micro-USB Port
+2. **Micro-USB Port**
 
 - Setup: Remove J48 jumper cap to use Micro-USB input.
 - Best for: Initial setup and lightweight tasks.
 - Limitation: Many Micro-USB adapters/cables cannot provide stable current for high-performance operation.
-3. Mini560 DC-DC Step-Down (Robot Integration)
-
+3. **Mini560 DC-DC Step-Down** 
 - Setup: Use Mini560 buck converter (5A) to step robot battery voltage down to stable 5V, then feed Jetson barrel jack.
 - Best for: AMR runtime and field testing.
 - Why: 5A headroom helps maintain stable Jetson power when motor load causes battery voltage fluctuations.
