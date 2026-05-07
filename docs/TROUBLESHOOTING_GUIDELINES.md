@@ -229,37 +229,26 @@ hostname
 
 ## 8) Powering the NVIDIA Jetson Nano
 
-To ensure stable performance, especially when running intensive AI workloads or ROS nodes, selecting the right power source is critical. Below are the three primary methods to power your Jetson Nano:
+To keep Jetson Nano stable during ROS and AI workloads, use one of these power methods.
 
-1. 5V 4A DC Barrel Jack (Recommended)
+8.1) 5V 4A DC Barrel Jack (Recommended)
+Most reliable option for stationary development and 10W mode.
 
-This is the most reliable method for stationary development and Maximum Power Mode (10W).
+Setup: Install jumper cap on J48 to enable barrel-jack power input.
+Best for: Bench testing, mapping, and heavy compute sessions.
+Why: Reduces brownout risk during high CPU/GPU load.
+8.2) Micro-USB Port
+Convenient but limited.
 
-Setup: Requires a jumper cap on the J48 pins to enable power through the barrel jack.
+Setup: Remove J48 jumper cap to use Micro-USB input.
+Best for: Initial setup and lightweight tasks.
+Limitation: Many Micro-USB adapters/cables cannot provide stable current for high-performance operation.
+8.3) Mini560 DC-DC Step-Down (Robot Integration)
+Best option for mobile robot operation.
 
-Best For: Working on the Jetson independently from the robot or performing heavy computations where high current draw is expected.
-
-Advantage: Prevents "brownouts" (sudden shutdowns) that often occur under heavy load.
-
-2. Micro-USB Port
-
-A convenient but limited power option.
-
-Setup: Ensure the J48 jumper cap is removed to use this port.
-
-Best For: Basic setup, lightweight coding, or when a high-current DC supply isn't available.
-
-Disadvantage: Most Micro-USB cables and chargers cannot consistently deliver the amperage required for the Nano's high-performance modes, which may lead to system instability.
-
-3. Mini560 DC-DC Step-Down (Robot Integration)
-
-The ideal solution for mobile, wireless operation.
-
-Setup: Use a Mini560 (5A) buck converter to regulated your robot's main battery voltage down to a steady 5V, then feed it into the barrel jack.
-
-Best For: Autonomous Mobile Robots (AMR) and field testing.
-
-Advantage: The 5A capacity provides a safety margin above the Nano's 4A requirement, ensuring the Jetson stays powered even when the robot's motors create voltage fluctuations.
+Setup: Use Mini560 buck converter (5A) to step robot battery voltage down to stable 5V, then feed Jetson barrel jack.
+Best for: AMR runtime and field testing.
+Why: 5A headroom helps maintain stable Jetson power when motor load causes battery voltage fluctuations.
 
 ## 9) Shutdown Procedure
 
