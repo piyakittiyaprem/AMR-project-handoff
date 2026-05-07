@@ -11,7 +11,6 @@ This repository contains the ROS Noetic workspace for the AMR senior project.
 - `amr_manual_teleop`: keyboard teleoperation node and launch.
 - `amr_autonomous_mapping`: SLAM support nodes and SLAM launch.
 - `amr_navigation`: navigation stack config and RViz profiles.
-- `2020_SeniorProjectReportTemplate`: report template and assets.
 
 ## Environment setup 
 
