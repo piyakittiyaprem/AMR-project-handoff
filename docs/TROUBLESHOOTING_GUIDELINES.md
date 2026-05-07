@@ -231,7 +231,7 @@ hostname
 
 To ensure stable performance, especially when running intensive AI workloads or ROS nodes, selecting the right power source is critical. Below are the three primary methods to power your Jetson Nano:
 
-### 1. 5V 4A DC Barrel Jack (Recommended)
+1. 5V 4A DC Barrel Jack (Recommended)
 
 This is the most reliable method for stationary development and Maximum Power Mode (10W).
 
@@ -241,7 +241,7 @@ Best For: Working on the Jetson independently from the robot or performing heavy
 
 Advantage: Prevents "brownouts" (sudden shutdowns) that often occur under heavy load.
 
-### 2. Micro-USB Port
+2. Micro-USB Port
 
 A convenient but limited power option.
 
@@ -251,7 +251,7 @@ Best For: Basic setup, lightweight coding, or when a high-current DC supply isn'
 
 Disadvantage: Most Micro-USB cables and chargers cannot consistently deliver the amperage required for the Nano's high-performance modes, which may lead to system instability.
 
-### 3. Mini560 DC-DC Step-Down (Robot Integration)
+3. Mini560 DC-DC Step-Down (Robot Integration)
 
 The ideal solution for mobile, wireless operation.
 
