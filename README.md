@@ -13,14 +13,39 @@ This repository contains the ROS Noetic workspace for the AMR senior project.
 - `amr_navigation`: navigation stack config and RViz profiles.
 - `2020_SeniorProjectReportTemplate`: report template and assets.
 
-## Environment setup (each new terminal)
+## Environment setup 
 
-From workspace root:
+### 1) Copy project files to Jetson Nano workspace
+
+From laptop/host machine, copy this repository into Jetson catkin workspace `src`:
 
 ```bash
+scp -r "<local_project_path>" <jetson_user>@<jetson_ip>:~/catkin_ws/src/
+```
+
+Then on Jetson:
+
+```bash
+cd ~/catkin_ws/src
+ls
+```
+
+Pass criteria:
+- Project folder appears under `~/catkin_ws/src`.
+
+### 2) Build and source on Jetson
+
+From Jetson workspace root:
+
+```bash
+cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
 ```
+
+Pass criteria:
+- `catkin_make` completes with no build errors.
+- `source devel/setup.bash` returns with no errors.
 
 Pass criteria:
 - `catkin_make` completes with no build errors.
