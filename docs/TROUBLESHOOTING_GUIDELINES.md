@@ -1,6 +1,6 @@
 # AMR Troubleshooting Guidelines (Software + Hardware)
 
-This document is the practical troubleshooting playbook for daily operation.
+This document is the troubleshooting guide for operation.
 
 ## 1) Pre-Power Safety Checklist
 
@@ -161,7 +161,7 @@ rosrun tf view_frames
 
 ## 6) Viewing Jetson Desktop (Access Methods)
 
-Recommended practical workflow:
+Practical workflow from my experience (no dedicated monitor screen, but only laptop, dummy HDMI ,and micro-usb):
 1. Use **Method D** once to get Jetson IP.
 2. Connect via **Method E (SSH)** for terminal operations.
 3. Use **Method B (NoMachine)** for remote desktop.
@@ -225,15 +225,49 @@ hostname
 4. Connect balance port.
 5. Start charging with safe current for pack specification.
 6. Monitor for abnormal heat/swelling during charge.
-7. Full charge around `25.0 V` to `26.0 V` is normal for a 6S pack.
+7. Full charge around `25.0 V` to `26.0 V` is normal for a 6S pack, despite being rated at `22.2 V`.
 
-## 8) Shutdown Procedure
+## 8) Powering the NVIDIA Jetson Nano
+
+To ensure stable performance, especially when running intensive AI workloads or ROS nodes, selecting the right power source is critical. Below are the three primary methods to power your Jetson Nano:
+
+### 1. 5V 4A DC Barrel Jack (Recommended)
+
+This is the most reliable method for stationary development and Maximum Power Mode (10W).
+
+Setup: Requires a jumper cap on the J48 pins to enable power through the barrel jack.
+
+Best For: Working on the Jetson independently from the robot or performing heavy computations where high current draw is expected.
+
+Advantage: Prevents "brownouts" (sudden shutdowns) that often occur under heavy load.
+
+### 2. Micro-USB Port
+
+A convenient but limited power option.
+
+Setup: Ensure the J48 jumper cap is removed to use this port.
+
+Best For: Basic setup, lightweight coding, or when a high-current DC supply isn't available.
+
+Disadvantage: Most Micro-USB cables and chargers cannot consistently deliver the amperage required for the Nano's high-performance modes, which may lead to system instability.
+
+### 3. Mini560 DC-DC Step-Down (Robot Integration)
+
+The ideal solution for mobile, wireless operation.
+
+Setup: Use a Mini560 (5A) buck converter to regulated your robot's main battery voltage down to a steady 5V, then feed it into the barrel jack.
+
+Best For: Autonomous Mobile Robots (AMR) and field testing.
+
+Advantage: The 5A capacity provides a safety margin above the Nano's 4A requirement, ensuring the Jetson stays powered even when the robot's motors create voltage fluctuations.
+
+## 9) Shutdown Procedure
 
 1. Stop all ROS nodes and teleop commands (`Ctrl+C` per terminal).
 2. Turn OFF main power switch.
 3. Unplug battery after power-off to avoid parasitic drain and deep discharge.
 
-## 9) Every 30 Minutes During Operation
+## 10) Every 30 Minutes During Operation
 
 - Re-check LiPo voltage (must stay above `21.5 V`).
 - Re-check connector firmness and cable strain.
